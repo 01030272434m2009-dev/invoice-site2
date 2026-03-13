@@ -1,72 +1,235 @@
 <!DOCTYPE html>
 <html lang="ar">
 <head>
-    <meta charset="UTF-8">
-    <title>🌐 حركة المبيعات</title>
-    <style>
-        body { font-family: Tahoma, sans-serif; padding: 20px; background: #f5f5f5; }
-        table { border-collapse: collapse; width: 100%; margin-top: 20px; background: #fff; }
-        th, td { border: 1px solid #ccc; padding: 8px; text-align: center; }
-        th { background-color: #2196F3; color: #fff; }
-        h1 { text-align: center; color: #2196F3; }
-        .btn { padding: 8px 16px; background: #4CAF50; color: white; border: none; cursor: pointer; margin-top: 10px; }
-    </style>
+<meta charset="UTF-8">
+<title>📊 حركة المبيعات</title>
+
+<style>
+
+body{
+    font-family:Tahoma;
+    background:#f0f2f5;
+    margin:0;
+    padding:20px;
+}
+
+h1{
+    text-align:center;
+    color:#1976D2;
+    margin-bottom:10px;
+}
+
+.container{
+    max-width:1200px;
+    margin:auto;
+}
+
+.topButtons{
+    display:flex;
+    justify-content:center;
+    gap:10px;
+    margin-bottom:20px;
+}
+
+.btn{
+    padding:10px 20px;
+    border:none;
+    border-radius:6px;
+    cursor:pointer;
+    font-size:14px;
+    color:white;
+}
+
+.copy{
+    background:#4CAF50;
+}
+
+.print{
+    background:#FF9800;
+}
+
+table{
+    width:100%;
+    border-collapse:collapse;
+    background:white;
+    box-shadow:0 2px 6px rgba(0,0,0,0.2);
+}
+
+th{
+    background:#1976D2;
+    color:white;
+    padding:10px;
+}
+
+td{
+    padding:8px;
+    border-bottom:1px solid #ddd;
+    text-align:center;
+}
+
+tr:nth-child(even){
+    background:#f9f9f9;
+}
+
+.summary{
+    margin-top:20px;
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:10px;
+}
+
+.card{
+    background:white;
+    padding:15px;
+    border-radius:6px;
+    text-align:center;
+    box-shadow:0 2px 6px rgba(0,0,0,0.2);
+}
+
+.card h3{
+    margin:5px;
+    color:#1976D2;
+}
+
+.card span{
+    font-size:20px;
+    font-weight:bold;
+}
+
+</style>
 </head>
+
 <body>
-    <h1>📊 حركة المبيعات</h1>
-    <button class="btn" onclick="copyLink()">نسخ الرابط</button>
-    <table id="salesTable">
-        <thead>
-            <tr>
-                <th>كود الصنف</th>
-                <th>اسم الصنف</th>
-                <th>نوع البيع</th>
-                <th>طريقة الدفع</th>
-                <th>الكمية المباعة</th>
-                <th>إجمالي البيع</th>
-                <th>الأرباح</th>
-            </tr>
-        </thead>
-        <tbody>
-        </tbody>
-    </table>
 
-    <script>
-        function getQueryParam(param) {
-            const urlParams = new URLSearchParams(window.location.search);
-            return urlParams.get(param);
-        }
+<div class="container">
 
-        function copyLink() {
-            navigator.clipboard.writeText(window.location.href);
-            alert("تم نسخ الرابط!");
-        }
+<h1>📊 تقرير حركة المبيعات</h1>
 
-        // قراءة البيانات من Base64 JSON
-        const dataBase64 = getQueryParam('data');
-        if (dataBase64) {
-            try {
-                const jsonStr = atob(decodeURIComponent(dataBase64));
-                const salesData = JSON.parse(jsonStr);
-                const tbody = document.querySelector('#salesTable tbody');
-                salesData.forEach(item => {
-                    const row = document.createElement('tr');
-                    row.innerHTML = `
-                        <td>${item.code}</td>
-                        <td>${item.name}</td>
-                        <td>${item.priceMode}</td>
-                        <td>${item.payment}</td>
-                        <td>${item.qty}</td>
-                        <td>${item.total}</td>
-                        <td>${item.profit}</td>
-                    `;
-                    tbody.appendChild(row);
-                });
-            } catch (e) {
-                console.error("خطأ في فك تشفير البيانات:", e);
-                alert("البيانات غير صالحة!");
-            }
-        }
-    </script>
+<div class="topButtons">
+
+<button class="btn copy" onclick="copyLink()">📋 نسخ الرابط</button>
+
+<button class="btn print" onclick="window.print()">🖨️ طباعة</button>
+
+</div>
+
+<table id="salesTable">
+
+<thead>
+<tr>
+<th>كود الصنف</th>
+<th>اسم الصنف</th>
+<th>نوع البيع</th>
+<th>طريقة الدفع</th>
+<th>الكمية</th>
+<th>إجمالي البيع</th>
+<th>الأرباح</th>
+</tr>
+</thead>
+
+<tbody></tbody>
+
+</table>
+
+
+<div class="summary">
+
+<div class="card">
+<h3>عدد الأصناف</h3>
+<span id="itemsCount">0</span>
+</div>
+
+<div class="card">
+<h3>إجمالي الكمية</h3>
+<span id="totalQty">0</span>
+</div>
+
+<div class="card">
+<h3>إجمالي البيع</h3>
+<span id="totalSales">0</span>
+</div>
+
+<div class="card">
+<h3>إجمالي الأرباح</h3>
+<span id="totalProfit">0</span>
+</div>
+
+</div>
+
+</div>
+
+<script>
+
+function getQueryParam(param){
+    const urlParams=new URLSearchParams(window.location.search);
+    return urlParams.get(param);
+}
+
+function copyLink(){
+    navigator.clipboard.writeText(window.location.href);
+    alert("تم نسخ الرابط");
+}
+
+const dataBase64=getQueryParam('data');
+
+if(dataBase64){
+
+try{
+
+const jsonStr=atob(decodeURIComponent(dataBase64));
+const salesData=JSON.parse(jsonStr);
+
+const tbody=document.querySelector('#salesTable tbody');
+
+let totalQty=0;
+let totalSales=0;
+let totalProfit=0;
+
+salesData.forEach(item=>{
+
+const qty=parseFloat(item.qty)||0;
+const total=parseFloat(item.total)||0;
+const profit=parseFloat(item.profit)||0;
+
+totalQty+=qty;
+totalSales+=total;
+totalProfit+=profit;
+
+const row=document.createElement('tr');
+
+row.innerHTML=`
+<td>${item.code}</td>
+<td>${item.name}</td>
+<td>${item.priceMode}</td>
+<td>${item.payment}</td>
+<td>${qty}</td>
+<td>${total.toFixed(2)}</td>
+<td>${profit.toFixed(2)}</td>
+`;
+
+tbody.appendChild(row);
+
+});
+
+document.getElementById("itemsCount").innerText=salesData.length;
+
+document.getElementById("totalQty").innerText=totalQty;
+
+document.getElementById("totalSales").innerText=totalSales.toFixed(2)+" ج.م";
+
+document.getElementById("totalProfit").innerText=totalProfit.toFixed(2)+" ج.م";
+
+}catch(e){
+
+console.error(e);
+alert("خطأ في قراءة البيانات");
+
+}
+
+}
+
+</script>
+
 </body>
 </html>
+
