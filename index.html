@@ -46,20 +46,10 @@ cursor:pointer;
 font-size:14px;
 color:white;
 font-family:'Cairo';
-transition:0.2s;
 }
 
-button:hover{
-opacity:0.85;
-}
-
-.copyBtn{
-background:#4CAF50;
-}
-
-.printBtn{
-background:#FF9800;
-}
+.copyBtn{background:#4CAF50;}
+.printBtn{background:#FF9800;}
 
 table{
 width:100%;
@@ -72,7 +62,6 @@ th{
 background:#1976D2;
 color:white;
 padding:12px;
-font-size:15px;
 }
 
 td{
@@ -81,13 +70,7 @@ border-bottom:1px solid #ddd;
 text-align:center;
 }
 
-tr:nth-child(even){
-background:#f9f9f9;
-}
-
-tr:hover{
-background:#eef5ff;
-}
+tr:nth-child(even){background:#f9f9f9;}
 
 .stats{
 margin-top:25px;
@@ -112,7 +95,6 @@ margin-bottom:6px;
 .card h3{
 margin:5px;
 color:#1976D2;
-font-size:15px;
 }
 
 .card span{
@@ -152,21 +134,13 @@ font-weight:bold;
 <thead>
 
 <tr>
-
 <th><i class="fa-solid fa-barcode"></i> كود الصنف</th>
-
 <th><i class="fa-solid fa-box"></i> اسم الصنف</th>
-
 <th><i class="fa-solid fa-tag"></i> نوع البيع</th>
-
 <th><i class="fa-solid fa-credit-card"></i> طريقة الدفع</th>
-
 <th><i class="fa-solid fa-layer-group"></i> الكمية</th>
-
 <th><i class="fa-solid fa-money-bill"></i> إجمالي البيع</th>
-
 <th><i class="fa-solid fa-chart-column"></i> الأرباح</th>
-
 </tr>
 
 </thead>
@@ -178,63 +152,39 @@ font-weight:bold;
 <div class="stats">
 
 <div class="card">
-
 <i class="fa-solid fa-cubes"></i>
-
 <h3>عدد الأصناف</h3>
-
 <span id="itemsCount">0</span>
-
 </div>
 
 <div class="card">
-
 <i class="fa-solid fa-boxes-stacked"></i>
-
 <h3>إجمالي الكمية</h3>
-
 <span id="totalQty">0</span>
-
 </div>
 
 <div class="card cash">
-
 <i class="fa-solid fa-money-bill-wave"></i>
-
 <h3>إجمالي الكاش</h3>
-
 <span id="cashTotal">0</span>
-
 </div>
 
 <div class="card elec">
-
 <i class="fa-solid fa-credit-card"></i>
-
 <h3>إجمالي الإلكتروني</h3>
-
 <span id="elecTotal">0</span>
-
 </div>
 
 <div class="card sales">
-
 <i class="fa-solid fa-sack-dollar"></i>
-
 <h3>إجمالي البيع</h3>
-
 <span id="salesTotal">0</span>
-
 </div>
 
 <div class="card profit">
-
 <i class="fa-solid fa-chart-line"></i>
-
 <h3>إجمالي الأرباح</h3>
-
 <span id="profitTotal">0</span>
-
 </div>
 
 </div>
@@ -253,13 +203,19 @@ navigator.clipboard.writeText(window.location.href);
 alert("تم نسخ الرابط");
 }
 
+// حل مشكلة الحروف العربية
+function decodeBase64Unicode(str){
+const bytes=Uint8Array.from(atob(str),c=>c.charCodeAt(0));
+return new TextDecoder("utf-8").decode(bytes);
+}
+
 const dataBase64=getQueryParam('data');
 
 if(dataBase64){
 
 try{
 
-const jsonStr=atob(decodeURIComponent(dataBase64));
+const jsonStr=decodeBase64Unicode(decodeURIComponent(dataBase64));
 
 const salesData=JSON.parse(jsonStr);
 
@@ -283,7 +239,7 @@ totalProfit+=profit;
 
 let payment=(item.payment||"").toLowerCase();
 
-if(payment=="cash" || payment=="كاش")
+if(payment=="cash"||payment=="كاش")
 cashTotal+=total;
 else
 elecTotal+=total;
@@ -293,17 +249,11 @@ let row=document.createElement("tr");
 row.innerHTML=`
 
 <td>${item.code}</td>
-
 <td>${item.name}</td>
-
 <td>${item.priceMode}</td>
-
 <td>${item.payment}</td>
-
 <td>${qty}</td>
-
 <td>${total.toFixed(2)} ج</td>
-
 <td>${profit.toFixed(2)} ج</td>
 
 `;
@@ -313,23 +263,17 @@ tbody.appendChild(row);
 });
 
 document.getElementById("itemsCount").innerText=salesData.length;
-
 document.getElementById("totalQty").innerText=totalQty;
-
 document.getElementById("salesTotal").innerText=totalSales.toFixed(2)+" ج";
-
 document.getElementById("profitTotal").innerText=totalProfit.toFixed(2)+" ج";
-
 document.getElementById("cashTotal").innerText=cashTotal.toFixed(2)+" ج";
-
 document.getElementById("elecTotal").innerText=elecTotal.toFixed(2)+" ج";
 
 }
 catch(e){
 
 console.error(e);
-
-alert("خطأ في قراءة البيانات");
+alert("حدث خطأ في قراءة البيانات");
 
 }
 
@@ -338,6 +282,4 @@ alert("خطأ في قراءة البيانات");
 </script>
 
 </body>
-
 </html>
-
