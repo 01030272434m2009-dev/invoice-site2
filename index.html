@@ -1,138 +1,107 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
-
 <head>
-
 <meta charset="UTF-8">
-
 <title>📊 تقرير حركة المبيعات</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
-
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
 <style>
-
 body{
-font-family:'Cairo',sans-serif;
-background:#f2f4f7;
-margin:0;
-padding:20px;
-direction:rtl;
+    font-family:'Cairo',sans-serif;
+    background:#f2f4f7;
+    margin:0;
+    padding:20px;
+    direction:rtl;
 }
-
 .container{
-max-width:1200px;
-margin:auto;
+    max-width:1200px;
+    margin:auto;
 }
-
 h1{
-text-align:center;
-color:#1976D2;
-margin-bottom:25px;
+    text-align:center;
+    color:#1976D2;
+    margin-bottom:25px;
 }
-
 .buttons{
-text-align:center;
-margin-bottom:20px;
+    text-align:center;
+    margin-bottom:20px;
 }
-
 button{
-padding:10px 20px;
-margin:5px;
-border:none;
-border-radius:6px;
-cursor:pointer;
-font-size:14px;
-color:white;
-font-family:'Cairo';
+    padding:10px 20px;
+    margin:5px;
+    border:none;
+    border-radius:6px;
+    cursor:pointer;
+    font-size:14px;
+    color:white;
+    font-family:'Cairo';
 }
-
 .copyBtn{background:#4CAF50;}
 .printBtn{background:#FF9800;}
-
+.chartBtn{background:#9C27B0;}
 table{
-width:100%;
-border-collapse:collapse;
-background:white;
-box-shadow:0 2px 10px rgba(0,0,0,0.15);
+    width:100%;
+    border-collapse:collapse;
+    background:white;
+    box-shadow:0 2px 10px rgba(0,0,0,0.15);
 }
-
 th{
-background:#1976D2;
-color:white;
-padding:12px;
+    background:#1976D2;
+    color:white;
+    padding:12px;
 }
-
 td{
-padding:10px;
-border-bottom:1px solid #ddd;
-text-align:center;
+    padding:10px;
+    border-bottom:1px solid #ddd;
+    text-align:center;
 }
-
 tr:nth-child(even){background:#f9f9f9;}
-
 .stats{
-margin-top:25px;
-display:grid;
-grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
-gap:15px;
+    margin-top:25px;
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+    gap:15px;
 }
-
 .card{
-background:white;
-padding:18px;
-border-radius:10px;
-box-shadow:0 2px 10px rgba(0,0,0,0.15);
-text-align:center;
+    background:white;
+    padding:18px;
+    border-radius:10px;
+    box-shadow:0 2px 10px rgba(0,0,0,0.15);
+    text-align:center;
 }
-
 .card i{
-font-size:28px;
-margin-bottom:6px;
+    font-size:28px;
+    margin-bottom:6px;
 }
-
 .card h3{
-margin:5px;
-color:#1976D2;
+    margin:5px;
+    color:#1976D2;
 }
-
 .card span{
-font-size:22px;
-font-weight:bold;
+    font-size:22px;
+    font-weight:bold;
 }
-
 .cash i{color:#2E7D32;}
 .elec i{color:#1565C0;}
 .sales i{color:#E65100;}
 .profit i{color:#8E24AA;}
-
 </style>
-
 </head>
 
 <body>
-
 <div class="container">
-
 <h1><i class="fa-solid fa-chart-line"></i> تقرير حركة المبيعات</h1>
 
 <div class="buttons">
-
-<button class="copyBtn" onclick="copyLink()">
-<i class="fa-solid fa-copy"></i> نسخ الرابط
-</button>
-
-<button class="printBtn" onclick="window.print()">
-<i class="fa-solid fa-print"></i> طباعة
-</button>
-
+<button class="copyBtn" onclick="copyLink()"><i class="fa-solid fa-copy"></i> نسخ الرابط</button>
+<button class="printBtn" onclick="window.print()"><i class="fa-solid fa-print"></i> طباعة</button>
+<button class="chartBtn" onclick="openCharts()"><i class="fa-solid fa-chart-pie"></i> عرض الرسوم البيانية</button>
 </div>
 
 <table id="salesTable">
-
 <thead>
-
 <tr>
 <th><i class="fa-solid fa-barcode"></i> كود الصنف</th>
 <th><i class="fa-solid fa-box"></i> اسم الصنف</th>
@@ -142,144 +111,85 @@ font-weight:bold;
 <th><i class="fa-solid fa-money-bill"></i> إجمالي البيع</th>
 <th><i class="fa-solid fa-chart-column"></i> الأرباح</th>
 </tr>
-
 </thead>
-
 <tbody></tbody>
-
 </table>
 
 <div class="stats">
-
-<div class="card">
-<i class="fa-solid fa-cubes"></i>
-<h3>عدد الأصناف</h3>
-<span id="itemsCount">0</span>
+<div class="card"><i class="fa-solid fa-cubes"></i><h3>عدد الأصناف</h3><span id="itemsCount">0</span></div>
+<div class="card"><i class="fa-solid fa-boxes-stacked"></i><h3>إجمالي الكمية</h3><span id="totalQty">0</span></div>
+<div class="card cash"><i class="fa-solid fa-money-bill-wave"></i><h3>إجمالي الكاش</h3><span id="cashTotal">0</span></div>
+<div class="card elec"><i class="fa-solid fa-credit-card"></i><h3>إجمالي الإلكتروني</h3><span id="elecTotal">0</span></div>
+<div class="card sales"><i class="fa-solid fa-sack-dollar"></i><h3>إجمالي البيع</h3><span id="salesTotal">0</span></div>
+<div class="card profit"><i class="fa-solid fa-chart-line"></i><h3>إجمالي الأرباح</h3><span id="profitTotal">0</span></div>
 </div>
-
-<div class="card">
-<i class="fa-solid fa-boxes-stacked"></i>
-<h3>إجمالي الكمية</h3>
-<span id="totalQty">0</span>
-</div>
-
-<div class="card cash">
-<i class="fa-solid fa-money-bill-wave"></i>
-<h3>إجمالي الكاش</h3>
-<span id="cashTotal">0</span>
-</div>
-
-<div class="card elec">
-<i class="fa-solid fa-credit-card"></i>
-<h3>إجمالي الإلكتروني</h3>
-<span id="elecTotal">0</span>
-</div>
-
-<div class="card sales">
-<i class="fa-solid fa-sack-dollar"></i>
-<h3>إجمالي البيع</h3>
-<span id="salesTotal">0</span>
-</div>
-
-<div class="card profit">
-<i class="fa-solid fa-chart-line"></i>
-<h3>إجمالي الأرباح</h3>
-<span id="profitTotal">0</span>
-</div>
-
-</div>
-
 </div>
 
 <script>
-
+// ===== استدعاء البيانات =====
 function getQueryParam(param){
-const urlParams=new URLSearchParams(window.location.search);
-return urlParams.get(param);
+    const urlParams=new URLSearchParams(window.location.search);
+    return urlParams.get(param);
 }
-
 function copyLink(){
-navigator.clipboard.writeText(window.location.href);
-alert("تم نسخ الرابط");
+    navigator.clipboard.writeText(window.location.href);
+    alert("تم نسخ الرابط");
 }
-
-// حل مشكلة الحروف العربية
 function decodeBase64Unicode(str){
-const bytes=Uint8Array.from(atob(str),c=>c.charCodeAt(0));
-return new TextDecoder("utf-8").decode(bytes);
+    const bytes=Uint8Array.from(atob(str),c=>c.charCodeAt(0));
+    return new TextDecoder("utf-8").decode(bytes);
 }
 
+// ===== ملئ الجدول والاحصائيات =====
 const dataBase64=getQueryParam('data');
-
 if(dataBase64){
+    try{
+        const jsonStr=decodeBase64Unicode(decodeURIComponent(dataBase64));
+        const salesData=JSON.parse(jsonStr);
+        const tbody=document.querySelector("#salesTable tbody");
 
-try{
+        let totalQty=0,totalSales=0,totalProfit=0,cashTotal=0,elecTotal=0;
 
-const jsonStr=decodeBase64Unicode(decodeURIComponent(dataBase64));
-
-const salesData=JSON.parse(jsonStr);
-
-const tbody=document.querySelector("#salesTable tbody");
-
-let totalQty=0;
-let totalSales=0;
-let totalProfit=0;
-let cashTotal=0;
-let elecTotal=0;
-
-salesData.forEach(item=>{
-
-let qty=parseFloat(item.qty)||0;
-let total=parseFloat(item.total)||0;
-let profit=parseFloat(item.profit)||0;
-
-totalQty+=qty;
-totalSales+=total;
-totalProfit+=profit;
-
-let payment=(item.payment||"").toLowerCase();
-
-if(payment=="cash"||payment=="كاش")
-cashTotal+=total;
-else
-elecTotal+=total;
-
-let row=document.createElement("tr");
-
-row.innerHTML=`
-
+        salesData.forEach(item=>{
+            let qty=parseFloat(item.qty)||0;
+            let total=parseFloat(item.total)||0;
+            let profit=parseFloat(item.profit)||0;
+            totalQty+=qty; totalSales+=total; totalProfit+=profit;
+            let payment=(item.payment||"").toLowerCase();
+            if(payment=="cash"||payment=="كاش") cashTotal+=total;
+            else elecTotal+=total;
+            let row=document.createElement("tr");
+            row.innerHTML=`
 <td>${item.code}</td>
 <td>${item.name}</td>
 <td>${item.priceMode}</td>
 <td>${item.payment}</td>
 <td>${qty}</td>
 <td>${total.toFixed(2)} ج</td>
-<td>${profit.toFixed(2)} ج</td>
+<td>${profit.toFixed(2)} ج</td>`;
+            tbody.appendChild(row);
+        });
 
-`;
+        document.getElementById("itemsCount").innerText=salesData.length;
+        document.getElementById("totalQty").innerText=totalQty;
+        document.getElementById("salesTotal").innerText=totalSales.toFixed(2)+" ج";
+        document.getElementById("profitTotal").innerText=totalProfit.toFixed(2)+" ج";
+        document.getElementById("cashTotal").innerText=cashTotal.toFixed(2)+" ج";
+        document.getElementById("elecTotal").innerText=elecTotal.toFixed(2)+" ج";
 
-tbody.appendChild(row);
+        // حفظ البيانات في localStorage للصفحة الثانية
+        localStorage.setItem("salesData", JSON.stringify(salesData));
 
-});
-
-document.getElementById("itemsCount").innerText=salesData.length;
-document.getElementById("totalQty").innerText=totalQty;
-document.getElementById("salesTotal").innerText=totalSales.toFixed(2)+" ج";
-document.getElementById("profitTotal").innerText=totalProfit.toFixed(2)+" ج";
-document.getElementById("cashTotal").innerText=cashTotal.toFixed(2)+" ج";
-document.getElementById("elecTotal").innerText=elecTotal.toFixed(2)+" ج";
-
-}
-catch(e){
-
-console.error(e);
-alert("حدث خطأ في قراءة البيانات");
-
+    }catch(e){
+        console.error(e);
+        alert("حدث خطأ في قراءة البيانات");
+    }
 }
 
+// فتح صفحة الرسوم البيانية
+function openCharts(){
+    window.open("charts.html","_blank");
 }
-
 </script>
-
 </body>
 </html>
