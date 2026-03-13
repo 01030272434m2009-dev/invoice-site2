@@ -1,102 +1,111 @@
 <!DOCTYPE html>
-<html lang="ar">
+<html lang="ar" dir="rtl">
+
 <head>
+
 <meta charset="UTF-8">
-<title>📊 حركة المبيعات</title>
+
+<title>📊 تقرير حركة المبيعات</title>
 
 <style>
 
 body{
-    font-family:Tahoma;
-    background:#f0f2f5;
-    margin:0;
-    padding:20px;
-}
-
-h1{
-    text-align:center;
-    color:#1976D2;
-    margin-bottom:10px;
+font-family:"Tahoma",Arial;
+background:#f2f4f7;
+margin:0;
+padding:20px;
+direction:rtl;
 }
 
 .container{
-    max-width:1200px;
-    margin:auto;
+max-width:1200px;
+margin:auto;
 }
 
-.topButtons{
-    display:flex;
-    justify-content:center;
-    gap:10px;
-    margin-bottom:20px;
+h1{
+text-align:center;
+color:#1976D2;
+margin-bottom:20px;
 }
 
-.btn{
-    padding:10px 20px;
-    border:none;
-    border-radius:6px;
-    cursor:pointer;
-    font-size:14px;
-    color:white;
+.buttons{
+text-align:center;
+margin-bottom:20px;
 }
 
-.copy{
-    background:#4CAF50;
+button{
+padding:10px 20px;
+margin:5px;
+border:none;
+border-radius:6px;
+cursor:pointer;
+font-size:14px;
+color:white;
 }
 
-.print{
-    background:#FF9800;
+.copyBtn{
+background:#4CAF50;
+}
+
+.printBtn{
+background:#FF9800;
 }
 
 table{
-    width:100%;
-    border-collapse:collapse;
-    background:white;
-    box-shadow:0 2px 6px rgba(0,0,0,0.2);
+width:100%;
+border-collapse:collapse;
+background:white;
+box-shadow:0 2px 8px rgba(0,0,0,0.2);
 }
 
 th{
-    background:#1976D2;
-    color:white;
-    padding:10px;
+background:#1976D2;
+color:white;
+padding:10px;
 }
 
 td{
-    padding:8px;
-    border-bottom:1px solid #ddd;
-    text-align:center;
+padding:8px;
+border-bottom:1px solid #ddd;
+text-align:center;
 }
 
 tr:nth-child(even){
-    background:#f9f9f9;
+background:#f9f9f9;
 }
 
-.summary{
-    margin-top:20px;
-    display:grid;
-    grid-template-columns:repeat(4,1fr);
-    gap:10px;
+.stats{
+margin-top:25px;
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+gap:15px;
 }
 
 .card{
-    background:white;
-    padding:15px;
-    border-radius:6px;
-    text-align:center;
-    box-shadow:0 2px 6px rgba(0,0,0,0.2);
+background:white;
+padding:15px;
+border-radius:8px;
+box-shadow:0 2px 8px rgba(0,0,0,0.2);
+text-align:center;
 }
 
 .card h3{
-    margin:5px;
-    color:#1976D2;
+margin:5px;
+color:#1976D2;
 }
 
 .card span{
-    font-size:20px;
-    font-weight:bold;
+font-size:22px;
+font-weight:bold;
 }
 
+.cash{color:#2E7D32;}
+.elec{color:#1565C0;}
+.sales{color:#E65100;}
+.profit{color:#8E24AA;}
+
 </style>
+
 </head>
 
 <body>
@@ -105,34 +114,43 @@ tr:nth-child(even){
 
 <h1>📊 تقرير حركة المبيعات</h1>
 
-<div class="topButtons">
+<div class="buttons">
 
-<button class="btn copy" onclick="copyLink()">📋 نسخ الرابط</button>
+<button class="copyBtn" onclick="copyLink()">📋 نسخ الرابط</button>
 
-<button class="btn print" onclick="window.print()">🖨️ طباعة</button>
+<button class="printBtn" onclick="window.print()">🖨 طباعة</button>
 
 </div>
 
 <table id="salesTable">
 
 <thead>
+
 <tr>
+
 <th>كود الصنف</th>
+
 <th>اسم الصنف</th>
+
 <th>نوع البيع</th>
+
 <th>طريقة الدفع</th>
+
 <th>الكمية</th>
+
 <th>إجمالي البيع</th>
+
 <th>الأرباح</th>
+
 </tr>
+
 </thead>
 
 <tbody></tbody>
 
 </table>
 
-
-<div class="summary">
+<div class="stats">
 
 <div class="card">
 <h3>عدد الأصناف</h3>
@@ -145,13 +163,23 @@ tr:nth-child(even){
 </div>
 
 <div class="card">
-<h3>إجمالي البيع</h3>
-<span id="totalSales">0</span>
+<h3 class="cash">إجمالي الكاش</h3>
+<span id="cashTotal">0</span>
 </div>
 
 <div class="card">
-<h3>إجمالي الأرباح</h3>
-<span id="totalProfit">0</span>
+<h3 class="elec">إجمالي الإلكتروني</h3>
+<span id="elecTotal">0</span>
+</div>
+
+<div class="card">
+<h3 class="sales">إجمالي البيع</h3>
+<span id="salesTotal">0</span>
+</div>
+
+<div class="card">
+<h3 class="profit">إجمالي الأرباح</h3>
+<span id="profitTotal">0</span>
 </div>
 
 </div>
@@ -161,13 +189,13 @@ tr:nth-child(even){
 <script>
 
 function getQueryParam(param){
-    const urlParams=new URLSearchParams(window.location.search);
-    return urlParams.get(param);
+const urlParams=new URLSearchParams(window.location.search);
+return urlParams.get(param);
 }
 
 function copyLink(){
-    navigator.clipboard.writeText(window.location.href);
-    alert("تم نسخ الرابط");
+navigator.clipboard.writeText(window.location.href);
+alert("تم نسخ الرابط");
 }
 
 const dataBase64=getQueryParam('data');
@@ -177,34 +205,52 @@ if(dataBase64){
 try{
 
 const jsonStr=atob(decodeURIComponent(dataBase64));
+
 const salesData=JSON.parse(jsonStr);
 
-const tbody=document.querySelector('#salesTable tbody');
+const tbody=document.querySelector("#salesTable tbody");
 
 let totalQty=0;
 let totalSales=0;
 let totalProfit=0;
+let cashTotal=0;
+let elecTotal=0;
 
 salesData.forEach(item=>{
 
-const qty=parseFloat(item.qty)||0;
-const total=parseFloat(item.total)||0;
-const profit=parseFloat(item.profit)||0;
+let qty=parseFloat(item.qty)||0;
+let total=parseFloat(item.total)||0;
+let profit=parseFloat(item.profit)||0;
 
 totalQty+=qty;
 totalSales+=total;
 totalProfit+=profit;
 
-const row=document.createElement('tr');
+let payment=(item.payment||"").toLowerCase();
+
+if(payment=="cash" || payment=="كاش")
+cashTotal+=total;
+else
+elecTotal+=total;
+
+let row=document.createElement("tr");
 
 row.innerHTML=`
+
 <td>${item.code}</td>
+
 <td>${item.name}</td>
+
 <td>${item.priceMode}</td>
+
 <td>${item.payment}</td>
+
 <td>${qty}</td>
-<td>${total.toFixed(2)}</td>
-<td>${profit.toFixed(2)}</td>
+
+<td>${total.toFixed(2)} ج</td>
+
+<td>${profit.toFixed(2)} ج</td>
+
 `;
 
 tbody.appendChild(row);
@@ -215,13 +261,19 @@ document.getElementById("itemsCount").innerText=salesData.length;
 
 document.getElementById("totalQty").innerText=totalQty;
 
-document.getElementById("totalSales").innerText=totalSales.toFixed(2)+" ج.م";
+document.getElementById("salesTotal").innerText=totalSales.toFixed(2)+" ج";
 
-document.getElementById("totalProfit").innerText=totalProfit.toFixed(2)+" ج.م";
+document.getElementById("profitTotal").innerText=totalProfit.toFixed(2)+" ج";
 
-}catch(e){
+document.getElementById("cashTotal").innerText=cashTotal.toFixed(2)+" ج";
+
+document.getElementById("elecTotal").innerText=elecTotal.toFixed(2)+" ج";
+
+}
+catch(e){
 
 console.error(e);
+
 alert("خطأ في قراءة البيانات");
 
 }
@@ -231,5 +283,5 @@ alert("خطأ في قراءة البيانات");
 </script>
 
 </body>
-</html>
 
+</html>
