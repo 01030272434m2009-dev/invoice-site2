@@ -6,7 +6,6 @@
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-
 <style>
 body{
     font-family:'Cairo',sans-serif;
@@ -58,10 +57,32 @@ h2{
 </div>
 
 <script>
-const salesData = JSON.parse(localStorage.getItem("salesData") || "[]");
+// ===== دالة لفك Base64 مع دعم الحروف العربية =====
+function decodeBase64Unicode(str){
+    const bytes=Uint8Array.from(atob(str),c=>c.charCodeAt(0));
+    return new TextDecoder("utf-8").decode(bytes);
+}
 
-if(salesData.length === 0){
-    alert("لا توجد بيانات للعرض! ارجع للصفحة الرئيسية.");
+// ===== الحصول على بيانات من رابط URL =====
+function getQueryParam(param){
+    const urlParams = new URLSearchParams(window.location.search);
+    return urlParams.get(param);
+}
+
+const dataBase64 = getQueryParam('data');
+
+let salesData = [];
+
+if(dataBase64){
+    try{
+        const jsonStr = decodeBase64Unicode(decodeURIComponent(dataBase64));
+        salesData = JSON.parse(jsonStr);
+    }catch(e){
+        console.error("خطأ في فك البيانات:", e);
+        alert("البيانات غير صالحة!");
+    }
+} else {
+    alert("لا توجد بيانات للعرض! تأكد من وجود ?data= في الرابط.");
 }
 
 // ===== أفضل 5 أصناف حسب إجمالي البيع =====
@@ -75,7 +96,7 @@ new Chart(ctxTop,{
     data:{
         labels:topLabels,
         datasets:[{
-            label:'إجمالي البيع',
+            label:'إجمالي البيع (ج)',
             data:topValues,
             backgroundColor:'#FF9800'
         }]
@@ -127,7 +148,7 @@ new Chart(ctxMonth,{
     data:{
         labels:monthLabels,
         datasets:[{
-            label:'إجمالي المبيعات',
+            label:'إجمالي المبيعات (ج)',
             data:monthTotals,
             borderColor:'#1976D2',
             backgroundColor:'rgba(25,118,210,0.2)',
