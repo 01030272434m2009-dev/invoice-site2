@@ -3,170 +3,191 @@
 <head>
 <meta charset="UTF-8">
 <title>📊 الرسوم البيانية للمبيعات</title>
+
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
 <style>
-body {
+body{
     font-family:'Cairo',sans-serif;
-    background:#eef2f7;
+    background:#f2f4f7;
     margin:0;
     padding:20px;
+    direction:rtl;
 }
-.container {
+.container{
     max-width:1200px;
     margin:auto;
 }
-h1 {
+h1{
     text-align:center;
-    color:#9C27B0;
+    color:#1976D2;
     margin-bottom:25px;
 }
-.card {
+.chart-section{
     background:white;
     padding:20px;
+    margin-bottom:25px;
     border-radius:12px;
-    box-shadow:0 2px 15px rgba(0,0,0,0.15);
-    margin-bottom:20px;
+    box-shadow:0 2px 12px rgba(0,0,0,0.15);
 }
-.card h3 {
-    color:#9C27B0;
+.chart-section h2{
     margin-bottom:15px;
+    color:#1976D2;
 }
-canvas {
-    max-width:100%;
-}
-.suggestions {
-    display:flex;
-    gap:15px;
-    flex-wrap:wrap;
-    margin-top:15px;
-}
-.suggestion {
-    flex:1;
-    background:#fff;
+canvas{
+    background:#fafafa;
     border-radius:10px;
-    padding:15px;
-    box-shadow:0 2px 8px rgba(0,0,0,0.1);
-    display:flex;
-    align-items:center;
-    gap:10px;
 }
-.suggestion i {
+.stats-cards{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+    gap:15px;
+    margin-top:20px;
+}
+.card{
+    background:white;
+    padding:15px;
+    border-radius:10px;
+    box-shadow:0 2px 12px rgba(0,0,0,0.15);
+    text-align:center;
+}
+.card i{
     font-size:28px;
-    color:#E65100;
+    margin-bottom:8px;
+    color:#1976D2;
+}
+.card h3{
+    margin:5px;
+    color:#1976D2;
+}
+.card span{
+    font-size:20px;
+    font-weight:bold;
 }
 </style>
 </head>
+
 <body>
 <div class="container">
 <h1><i class="fa-solid fa-chart-pie"></i> الرسوم البيانية للمبيعات</h1>
 
-<div class="card">
-<h3>🔥 أفضل 5 أصناف</h3>
-<canvas id="topProductsChart"></canvas>
-<div class="suggestions" id="topSuggestions"></div>
+<div class="stats-cards">
+<div class="card"><i class="fa-solid fa-cubes"></i><h3>عدد الأصناف</h3><span id="itemsCount">0</span></div>
+<div class="card"><i class="fa-solid fa-layer-group"></i><h3>إجمالي الكمية</h3><span id="totalQty">0</span></div>
+<div class="card"><i class="fa-solid fa-money-bill-wave"></i><h3>إجمالي الكاش</h3><span id="cashTotal">0</span></div>
+<div class="card"><i class="fa-solid fa-credit-card"></i><h3>إجمالي الإلكتروني</h3><span id="elecTotal">0</span></div>
+<div class="card"><i class="fa-solid fa-sack-dollar"></i><h3>إجمالي البيع</h3><span id="salesTotal">0</span></div>
+<div class="card"><i class="fa-solid fa-chart-line"></i><h3>إجمالي الأرباح</h3><span id="profitTotal">0</span></div>
 </div>
 
-<div class="card">
-<h3>📈 مبيعات كل الأصناف</h3>
-<canvas id="allProductsChart"></canvas>
+<div class="chart-section">
+<h2><i class="fa-solid fa-fire"></i> أفضل 5 أصناف</h2>
+<canvas id="topItemsChart" height="150"></canvas>
 </div>
 
-<div class="card">
-<h3>🍩 نسبة المبيعات حسب طريقة الدفع</h3>
-<canvas id="paymentPieChart"></canvas>
+<div class="chart-section">
+<h2><i class="fa-solid fa-chart-simple"></i> نسبة المبيعات لكل صنف</h2>
+<canvas id="salesPieChart" height="150"></canvas>
 </div>
 
-<div class="card">
-<h3>📅 تحليل المبيعات الشهري</h3>
-<canvas id="monthlyChart"></canvas>
+<div class="chart-section">
+<h2><i class="fa-solid fa-calendar"></i> تحليل المبيعات بالشهور</h2>
+<canvas id="monthlyChart" height="150"></canvas>
 </div>
 </div>
 
 <script>
-// استدعاء البيانات من localStorage
-const salesData = JSON.parse(localStorage.getItem("salesData") || "[]");
+// ==== استدعاء البيانات ====
+let salesData = [];
 
-// ====== أفضل 5 أصناف ======
-let productTotals = {};
-salesData.forEach(item => {
-    if(!productTotals[item.name]) productTotals[item.name]=0;
-    productTotals[item.name]+=parseFloat(item.total)||0;
-});
-let sortedProducts = Object.entries(productTotals).sort((a,b)=>b[1]-a[1]);
-let top5 = sortedProducts.slice(0,5);
-let topLabels = top5.map(p=>p[0]);
-let topValues = top5.map(p=>p[1]);
+// أولاً حاول نقرأ من localStorage
+const storedData = localStorage.getItem("salesData");
+if(storedData){
+    try{ salesData = JSON.parse(storedData); } catch(e){ console.error(e); }
+}
 
-// عرض الاقتراحات للمنتجات الأعلى
-const suggestionsDiv = document.getElementById("topSuggestions");
-top5.forEach(p=>{
-    let div = document.createElement("div");
-    div.className="suggestion";
-    div.innerHTML=`<i class="fa-solid fa-fire"></i><span><strong>${p[0]}</strong>: ${p[1].toFixed(2)} ج</span>`;
-    suggestionsDiv.appendChild(div);
-});
-
-// رسم المخطط
-new Chart(document.getElementById("topProductsChart"), {
-    type:'bar',
-    data:{
-        labels: topLabels,
-        datasets:[{
-            label:'أعلى مبيعات (جنيه)',
-            data: topValues,
-            backgroundColor:'#9C27B0'
-        }]
-    },
-    options:{
-        responsive:true,
-        plugins:{legend:{display:false}},
-        scales:{y:{beginAtZero:true}}
+// إذا لم توجد، حاول من ?data=
+if(salesData.length===0){
+    const urlData = new URLSearchParams(window.location.search).get('data');
+    if(urlData){
+        try{
+            const jsonStr = decodeURIComponent(atob(urlData));
+            salesData = JSON.parse(jsonStr);
+        }catch(e){ console.error("خطأ في فك البيانات:", e); }
     }
-});
+}
 
-// ====== كل الأصناف ======
-let allLabels = Object.keys(productTotals);
-let allValues = Object.values(productTotals);
+// إذا لا توجد بيانات
+if(salesData.length===0){
+    alert("لا توجد بيانات للعرض!");
+} else {
+    // احصائيات عامة
+    let totalQty=0, totalSales=0, totalProfit=0, cashTotal=0, elecTotal=0;
+    salesData.forEach(item=>{
+        let qty=parseFloat(item.qty)||0;
+        let total=parseFloat(item.total)||0;
+        let profit=parseFloat(item.profit)||0;
+        totalQty+=qty; totalSales+=total; totalProfit+=profit;
+        let payment=(item.payment||"").toLowerCase();
+        if(payment=="cash"||payment=="كاش") cashTotal+=total;
+        else elecTotal+=total;
+    });
 
-new Chart(document.getElementById("allProductsChart"), {
-    type:'bar',
-    data:{labels:allLabels,datasets:[{label:'المبيعات (جنيه)',data:allValues,backgroundColor:'#2196F3'}]},
-    options:{responsive:true,plugins:{legend:{display:false}},scales:{y:{beginAtZero:true}}}
-});
+    document.getElementById("itemsCount").innerText = salesData.length;
+    document.getElementById("totalQty").innerText = totalQty;
+    document.getElementById("salesTotal").innerText = totalSales.toFixed(2)+" ج";
+    document.getElementById("profitTotal").innerText = totalProfit.toFixed(2)+" ج";
+    document.getElementById("cashTotal").innerText = cashTotal.toFixed(2)+" ج";
+    document.getElementById("elecTotal").innerText = elecTotal.toFixed(2)+" ج";
 
-// ====== نسبة الدفع ======
-let cashTotal=0, elecTotal=0;
-salesData.forEach(item=>{
-    let payment=(item.payment||"").toLowerCase();
-    if(payment=="cash"||payment=="كاش") cashTotal+=parseFloat(item.total)||0;
-    else elecTotal+=parseFloat(item.total)||0;
-});
+    // ===== أفضل 5 أصناف =====
+    const topItems = [...salesData].sort((a,b)=>parseFloat(b.total)-parseFloat(a.total)).slice(0,5);
+    new Chart(document.getElementById("topItemsChart"),{
+        type:'bar',
+        data:{
+            labels: topItems.map(i=>i.name),
+            datasets:[{label:'إجمالي البيع', data:topItems.map(i=>i.total), backgroundColor:'#FF5722'}]
+        },
+        options:{
+            responsive:true,
+            plugins:{legend:{display:false}},
+            scales:{y:{beginAtZero:true}}
+        }
+    });
 
-new Chart(document.getElementById("paymentPieChart"), {
-    type:'doughnut',
-    data:{
-        labels:['كاش','إلكتروني'],
-        datasets:[{data:[cashTotal,elecTotal],backgroundColor:['#2E7D32','#1565C0']}]
-    },
-    options:{responsive:true,plugins:{legend:{position:'top'}}}
-});
+    // ===== رسم دائري لنسبة المبيعات =====
+    new Chart(document.getElementById("salesPieChart"),{
+        type:'pie',
+        data:{
+            labels: salesData.map(i=>i.name),
+            datasets:[{
+                data: salesData.map(i=>i.total),
+                backgroundColor: salesData.map(()=>`hsl(${Math.random()*360},70%,60%)`)
+            }]
+        },
+        options:{responsive:true, plugins:{legend:{position:'right'}}}
+    });
 
-// ====== تحليل شهري (تخطيطي لو لم تكن موجودة الأشهر في البيانات) ======
-let months=["يناير","فبراير","مارس","أبريل","مايو","يونيو","يوليو","أغسطس","سبتمبر","أكتوبر","نوفمبر","ديسمبر"];
-let monthlyTotals = Array(12).fill(0);
-salesData.forEach(item=>{
-    if(item.date){ // إذا لديك تاريخ الصنف
-        let month = new Date(item.date).getMonth();
+    // ===== تحليل بالشهور =====
+    const monthlyTotals = {};
+    salesData.forEach(item=>{
+        const dateStr = item.date || item.CreatedAt || new Date().toISOString();
+        const month = new Date(dateStr).toLocaleString('ar-EG',{month:'short',year:'numeric'});
+        if(!monthlyTotals[month]) monthlyTotals[month]=0;
         monthlyTotals[month]+=parseFloat(item.total)||0;
-    }
-});
-new Chart(document.getElementById("monthlyChart"),{
-    type:'line',
-    data:{labels:months,datasets:[{label:'إجمالي المبيعات (جنيه)',data:monthlyTotals,backgroundColor:'#FF9800',borderColor:'#FF9800',fill:true,tension:0.3}]},
-    options:{responsive:true,plugins:{legend:{position:'top'}}}
-});
+    });
+
+    new Chart(document.getElementById("monthlyChart"),{
+        type:'line',
+        data:{
+            labels:Object.keys(monthlyTotals),
+            datasets:[{label:'إجمالي البيع', data:Object.values(monthlyTotals), fill:false, borderColor:'#1976D2', tension:0.3}]
+        },
+        options:{responsive:true, plugins:{legend:{display:true}}}
+    });
+}
 </script>
 </body>
 </html>
