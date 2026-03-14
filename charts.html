@@ -1,207 +1,149 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
-
 <head>
 <meta charset="UTF-8">
-<title>📊 لوحة تحليل المبيعات</title>
+<title>📈 تحليلات المبيعات</title>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
 <style>
 body{
-    font-family:'Cairo', Tahoma, Arial;
+    font-family:'Cairo',sans-serif;
     background:#f2f4f7;
+    margin:0;
     padding:20px;
-}
-h1{
-    text-align:center;
-    color:#1976D2;
-    margin-bottom:30px;
 }
 .container{
     max-width:1200px;
     margin:auto;
 }
-.topStats{
-    display:grid;
-    grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
-    gap:15px;
-    margin-bottom:30px;
-}
-.card{
-    background:white;
-    padding:20px;
-    border-radius:10px;
-    box-shadow:0 2px 10px rgba(0,0,0,0.2);
+h1{
     text-align:center;
-}
-.card span{
-    font-size:22px;
-    font-weight:bold;
     color:#1976D2;
+    margin-bottom:25px;
 }
-.charts{
-    display:grid;
-    grid-template-columns:1fr;
-    gap:30px;
-}
-.chartBox{
+.chart-container{
+    margin:25px 0;
     background:white;
     padding:20px;
     border-radius:10px;
-    box-shadow:0 2px 10px rgba(0,0,0,0.2);
+    box-shadow:0 2px 12px rgba(0,0,0,0.15);
+}
+h2{
+    text-align:center;
+    color:#1976D2;
+    margin-bottom:15px;
 }
 </style>
 </head>
-
 <body>
 <div class="container">
-<h1>📊 لوحة تحليل المبيعات</h1>
+<h1><i class="fa-solid fa-chart-simple"></i> تحليلات المبيعات</h1>
 
-<div class="topStats">
-    <div class="card">
-        أفضل صنف مبيعًا
-        <br>
-        <span id="topItem"></span>
-    </div>
-    <div class="card">
-        أعلى ربح
-        <br>
-        <span id="topProfit"></span>
-    </div>
+<div class="chart-container">
+<h2>🔥 أفضل 5 أصناف</h2>
+<canvas id="topItemsChart" height="150"></canvas>
 </div>
 
-<div class="charts">
-    <div class="chartBox">
-        <canvas id="top5Chart"></canvas>
-    </div>
-    <div class="chartBox">
-        <canvas id="salesPieChart"></canvas>
-    </div>
-    <div class="chartBox">
-        <canvas id="monthlySalesChart"></canvas>
-    </div>
+<div class="chart-container">
+<h2>🍩 نسبة المبيعات</h2>
+<canvas id="salesPieChart" height="150"></canvas>
+</div>
+
+<div class="chart-container">
+<h2>📅 تحليل شهري لإجمالي المبيعات</h2>
+<canvas id="monthlyChart" height="150"></canvas>
 </div>
 </div>
 
 <script>
-// ===== دوال مساعدة =====
-function getQueryParam(param){
-    const urlParams=new URLSearchParams(window.location.search);
-    return urlParams.get(param);
+const salesData = JSON.parse(localStorage.getItem("salesData") || "[]");
+
+if(salesData.length === 0){
+    alert("لا توجد بيانات للعرض! ارجع للصفحة الرئيسية.");
 }
 
-function decodeBase64Unicode(str){
-    const bytes=Uint8Array.from(atob(str),c=>c.charCodeAt(0));
-    return new TextDecoder("utf-8").decode(bytes);
-}
+// ===== أفضل 5 أصناف حسب إجمالي البيع =====
+const topItems = salesData.sort((a,b)=>parseFloat(b.total)-parseFloat(a.total)).slice(0,5);
+const topLabels = topItems.map(i=>i.name);
+const topValues = topItems.map(i=>parseFloat(i.total));
 
-// ===== البيانات =====
-const dataBase64=getQueryParam('data');
-if(!dataBase64){
-    alert("لا توجد بيانات");
-    throw new Error("No data");
-}
-
-const jsonStr=decodeBase64Unicode(decodeURIComponent(dataBase64));
-const salesData=JSON.parse(jsonStr);
-
-// ===== التحليل =====
-let labels=[];
-let sales=[];
-let profits=[];
-let maxSale=0, maxSaleItem="";
-let maxProfit=0, maxProfitItem="";
-
-let monthlyMap={}; // شهر => مجموع المبيعات
-
-salesData.forEach(item=>{
-    const total=parseFloat(item.total)||0;
-    const profit=parseFloat(item.profit)||0;
-    const name=item.name;
-
-    labels.push(name);
-    sales.push(total);
-    profits.push(profit);
-
-    // أعلى صنف مبيعًا
-    if(total>maxSale){ maxSale=total; maxSaleItem=name; }
-    if(profit>maxProfit){ maxProfit=profit; maxProfitItem=name; }
-
-    // تحليل شهري
-    if(item.createdAt){
-        const date=new Date(item.createdAt);
-        const monthKey=`${date.getFullYear()}-${date.getMonth()+1}`;
-        if(!monthlyMap[monthKey]) monthlyMap[monthKey]=0;
-        monthlyMap[monthKey]+=total;
-    }
-});
-
-document.getElementById("topItem").innerText=maxSaleItem;
-document.getElementById("topProfit").innerText=maxProfitItem;
-
-// ===== أفضل 5 أصناف =====
-let combined=salesData.map(item=>({name:item.name,total:parseFloat(item.total)||0}));
-combined.sort((a,b)=>b.total-a.total);
-let top5=combined.slice(0,5);
-let top5Labels=top5.map(i=>i.name);
-let top5Data=top5.map(i=>i.total);
-
-new Chart(document.getElementById("top5Chart"),{
+const ctxTop = document.getElementById("topItemsChart").getContext("2d");
+new Chart(ctxTop,{
     type:'bar',
     data:{
-        labels:top5Labels,
+        labels:topLabels,
         datasets:[{
-            label:'المبيعات',
-            data:top5Data,
-            backgroundColor:['#1976D2','#4CAF50','#FF9800','#E91E63','#9C27B0']
+            label:'إجمالي البيع',
+            data:topValues,
+            backgroundColor:'#FF9800'
         }]
     },
     options:{
         responsive:true,
         plugins:{legend:{display:false}},
-        scales:{y:{beginAtZero:true}}
+        scales:{
+            y:{beginAtZero:true,title:{display:true,text:'إجمالي البيع (ج)'}},
+            x:{title:{display:true,text:'اسم الصنف'}}
+        }
     }
 });
 
-// ===== رسم دائري لنسبة المبيعات =====
-let pieLabels=combined.map(i=>i.name);
-let pieData=combined.map(i=>i.total);
-new Chart(document.getElementById("salesPieChart"),{
+// ===== رسم دائري لنسبة المبيعات لكل صنف =====
+const pieLabels = salesData.map(i=>i.name);
+const pieValues = salesData.map(i=>parseFloat(i.total));
+const pieColors = pieLabels.map(()=>`hsl(${Math.random()*360},70%,60%)`);
+
+const ctxPie = document.getElementById("salesPieChart").getContext("2d");
+new Chart(ctxPie,{
     type:'pie',
     data:{
         labels:pieLabels,
         datasets:[{
-            data:pieData,
-            backgroundColor:[
-                '#1976D2','#4CAF50','#FF9800','#E91E63','#9C27B0','#00BCD4','#FFC107','#9E9E9E'
-            ]
-        }]
-    },
-    options:{responsive:true,plugins:{legend:{position:'right'}}}
-});
-
-// ===== تحليل المبيعات بالشهور =====
-let months=Object.keys(monthlyMap).sort();
-let monthLabels=months;
-let monthData=months.map(m=>monthlyMap[m]);
-
-new Chart(document.getElementById("monthlySalesChart"),{
-    type:'bar',
-    data:{
-        labels:monthLabels,
-        datasets:[{
-            label:'إجمالي المبيعات الشهري',
-            data:monthData,
-            backgroundColor:'#FF5722'
+            data:pieValues,
+            backgroundColor:pieColors
         }]
     },
     options:{
         responsive:true,
-        plugins:{legend:{display:false}},
-        scales:{y:{beginAtZero:true}}
+        plugins:{legend:{position:'right'}}
+    }
+});
+
+// ===== تحليل شهري لإجمالي المبيعات =====
+const monthTotals = Array(12).fill(0);
+salesData.forEach(item=>{
+    if(item.date){
+        const d = new Date(item.date);
+        monthTotals[d.getMonth()] += parseFloat(item.total)||0;
+    }
+});
+const monthLabels = ['يناير','فبراير','مارس','أبريل','مايو','يونيو','يوليو','أغسطس','سبتمبر','أكتوبر','نوفمبر','ديسمبر'];
+
+const ctxMonth = document.getElementById("monthlyChart").getContext("2d");
+new Chart(ctxMonth,{
+    type:'line',
+    data:{
+        labels:monthLabels,
+        datasets:[{
+            label:'إجمالي المبيعات',
+            data:monthTotals,
+            borderColor:'#1976D2',
+            backgroundColor:'rgba(25,118,210,0.2)',
+            fill:true,
+            tension:0.3
+        }]
+    },
+    options:{
+        responsive:true,
+        plugins:{legend:{display:true}},
+        scales:{
+            y:{beginAtZero:true,title:{display:true,text:'إجمالي البيع (ج)'}},
+            x:{title:{display:true,text:'الشهر'}}
+        }
     }
 });
 </script>
-
 </body>
 </html>
