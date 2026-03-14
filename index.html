@@ -3,10 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <title>📊 تقرير حركة المبيعات</title>
-
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-
 <style>
 body{
     font-family:'Cairo',sans-serif;
@@ -126,15 +124,19 @@ tr:nth-child(even){background:#f9f9f9;}
 </div>
 
 <script>
-// ===== استدعاء البيانات =====
+// ===== استدعاء البيانات من الرابط =====
 function getQueryParam(param){
     const urlParams=new URLSearchParams(window.location.search);
     return urlParams.get(param);
 }
+
+// نسخ الرابط
 function copyLink(){
     navigator.clipboard.writeText(window.location.href);
     alert("تم نسخ الرابط");
 }
+
+// حل مشكلة الحروف العربية
 function decodeBase64Unicode(str){
     const bytes=Uint8Array.from(atob(str),c=>c.charCodeAt(0));
     return new TextDecoder("utf-8").decode(bytes);
@@ -177,7 +179,7 @@ if(dataBase64){
         document.getElementById("cashTotal").innerText=cashTotal.toFixed(2)+" ج";
         document.getElementById("elecTotal").innerText=elecTotal.toFixed(2)+" ج";
 
-        // حفظ البيانات في localStorage للصفحة الثانية
+        // تمرير البيانات للصفحة الثانية
         localStorage.setItem("salesData", JSON.stringify(salesData));
 
     }catch(e){
@@ -186,7 +188,7 @@ if(dataBase64){
     }
 }
 
-// فتح صفحة الرسوم البيانية
+// فتح صفحة الرسوم البيانية واستقبال البيانات تلقائياً
 function openCharts(){
     window.open("charts.html","_blank");
 }
