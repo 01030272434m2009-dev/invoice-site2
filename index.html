@@ -3,19 +3,21 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>📊 لوحة تقارير المبيعات الذكية</title>
+<title>📊 لوحة تقارير المبيعات الذكية المدمجة</title>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 <style>
 :root {
-    --bg-primary: #f4f6f9;
+    --bg-primary: #f8fafc;
     --card-bg: #ffffff;
-    --text-main: #2c3e50;
-    --border-color: #e2e8f0;
-    --primary-color: #1b6838; /* اللون الأخضر الغني المعتمد */
-    --accent-blue: #1565c0;   /* الأزرق المالي الإلكتروني */
-    --accent-orange: #e65100; /* البرتقالي للمبيعات الكلية */
-    --accent-purple: #8e24aa; /* البنفسجي للأرباح المباشرة */
+    --text-main: #1e293b;
+    --border-color: #cbd5e1;
+    --primary-color: #10b981; /* أخضر زمردي مريح وعصري */
+    --accent-blue: #3b82f6;   /* أزرق مالي ذكي */
+    --accent-orange: #f97316; /* برتقالي حيوي */
+    --accent-purple: #8b5cf6; /* بنفسجي ملكي للأرباح */
+    --ai-bg: #f0fdf4;         /* خلفية قسم الذكاء الاصطناعي */
+    --ai-border: #bbf7d0;
 }
 
 body {
@@ -28,29 +30,30 @@ body {
 }
 
 .container {
-    max-width: 1280px;
+    max-width: 1300px;
     margin: auto;
 }
 
 /* الهيدر العلوي */
 .header-wrapper {
     background: var(--card-bg);
-    padding: 20px 30px;
-    border-radius: 12px;
-    box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05), 0 2px 4px -1px rgba(0,0,0,0.03);
+    padding: 24px 35px;
+    border-radius: 16px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
     margin-bottom: 25px;
     display: flex;
     justify-content: space-between;
     align-items: center;
     flex-wrap: wrap;
-    gap: 15px;
+    gap: 20px;
+    border: 1px solid #f1f5f9;
 }
 
 .header-title {
     margin: 0;
-    font-size: 24px;
+    font-size: 26px;
     font-weight: 700;
-    color: var(--text-main);
+    color: #0f172a;
     display: flex;
     align-items: center;
     gap: 12px;
@@ -60,16 +63,16 @@ body {
     color: var(--primary-color);
 }
 
-/* شريط الأزرار التفاعلي */
+/* شريط الأزرار */
 .buttons-group {
     display: flex;
-    gap: 10px;
+    gap: 12px;
 }
 
 button {
-    padding: 10px 22px;
+    padding: 12px 24px;
     border: none;
-    border-radius: 8px;
+    border-radius: 10px;
     cursor: pointer;
     font-size: 14px;
     font-weight: 600;
@@ -78,88 +81,126 @@ button {
     display: flex;
     align-items: center;
     gap: 8px;
-    transition: all 0.2s ease-in-out;
+    transition: all 0.25s ease;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.02);
 }
 
-.copyBtn { background: #34495e; }
-.copyBtn:hover { background: #2c3e50; }
+.copyBtn { background: #475569; }
+.copyBtn:hover { background: #334155; transform: translateY(-1px); }
 
 .printBtn { background: var(--primary-color); }
-.printBtn:hover { background: #14522b; }
+.printBtn:hover { background: #059669; transform: translateY(-1px); }
 
 .chartBtn { background: var(--accent-blue); }
-.chartBtn:hover { background: #0d47a1; }
+.chartBtn:hover { background: #2563eb; transform: translateY(-1px); }
 
-/* تصميم لوحة الكروت الإحصائية */
+/* قسم مستشار الذكاء الاصطناعي الذكي */
+.ai-advisor-container {
+    background: linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 100%);
+    border: 1px solid var(--ai-border);
+    border-radius: 16px;
+    padding: 20px 25px;
+    margin-bottom: 25px;
+    display: flex;
+    align-items: flex-start;
+    gap: 20px;
+    animation: fadeIn 0.6s ease-out;
+}
+
+.ai-icon {
+    font-size: 35px;
+    color: #059669;
+    background: #d1fae5;
+    padding: 12px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.ai-content h2 {
+    margin: 0 0 8px 0;
+    font-size: 18px;
+    font-weight: 700;
+    color: #065f46;
+}
+
+.ai-content p {
+    margin: 0;
+    font-size: 15px;
+    line-height: 1.7;
+    color: #047857;
+}
+
+/* لوحة الكروت الإحصائية */
 .stats-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
-    gap: 15px;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
     margin-bottom: 25px;
 }
 
 .card {
     background: var(--card-bg);
-    padding: 20px;
-    border-radius: 12px;
-    box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+    padding: 22px;
+    border-radius: 16px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.02);
     text-align: right;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    border-right: 5px solid #bdc3c7;
-    transition: transform 0.2s;
+    position: relative;
+    overflow: hidden;
+    border: 1px solid #f1f5f9;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .card:hover {
-    transform: translateY(-3px);
+    transform: translateY(-4px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+}
+
+.card-header-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
 }
 
 .card i {
-    font-size: 26px;
-    margin-bottom: 10px;
+    font-size: 24px;
 }
 
 .card h3 {
     margin: 0;
     font-size: 14px;
-    color: #7f8c8d;
+    color: #64748b;
     font-weight: 600;
 }
 
 .card .value-display {
-    font-size: 20px;
+    font-size: 22px;
     font-weight: 700;
-    margin-top: 8px;
-    word-break: break-all;
+    color: #0f172a;
+    margin-top: 5px;
 }
 
-/* ألوان مخصصة لكل كارت لسهولة القراءة البصرية */
-.card.items { border-right-color: #7f8c8d; }
-.card.items i { color: #7f8c8d; }
+/* تلوين الكروت بلمسة أنيقة هادئة */
+.card.items { border-top: 4px solid #64748b; } .card.items i { color: #64748b; }
+.card.qty { border-top: 4px solid var(--accent-blue); } .card.qty i { color: var(--accent-blue); }
+.card.cash { border-top: 4px solid var(--primary-color); } .card.cash i { color: var(--primary-color); }
+.card.elec { border-top: 4px solid var(--accent-purple); } .card.elec i { color: var(--accent-purple); }
+.card.sales { border-top: 4px solid var(--accent-orange); } .card.sales i { color: var(--accent-orange); }
+.card.profit { border-top: 4px solid #0284c7; } .card.profit i { color: #0284c7; }
 
-.card.qty { border-right-color: #2980b9; }
-.card.qty i { color: #2980b9; }
-
-.card.cash { border-right-color: var(--primary-color); }
-.card.cash i { color: var(--primary-color); }
-
-.card.elec { border-right-color: var(--accent-blue); }
-.card.elec i { color: var(--accent-blue); }
-
-.card.sales { border-right-color: var(--accent-orange); }
-.card.sales i { color: var(--accent-orange); }
-
-.card.profit { border-right-color: var(--accent-purple); }
-.card.profit i { color: var(--accent-purple); }
-
-/* حاوية الجدول الاحترافي */
+/* حاوية الجدول */
 .table-container {
     background: var(--card-bg);
-    border-radius: 12px;
-    box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+    border-radius: 16px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02);
     overflow: hidden;
-    border: 1px solid var(--border-color);
+    border: 1px solid #e2e8f0;
+    animation: fadeIn 0.8s ease-out;
 }
 
 table {
@@ -170,58 +211,68 @@ table {
 
 th {
     background: #f8fafc;
-    color: #64748b;
-    padding: 16px;
+    color: #475569;
+    padding: 18px 20px;
     font-weight: 700;
     font-size: 14px;
-    border-bottom: 2px solid var(--border-color);
+    border-bottom: 2px solid #edf2f7;
 }
 
 td {
-    padding: 14px 16px;
-    border-bottom: 1px solid var(--border-color);
+    padding: 16px 20px;
+    border-bottom: 1px solid #f1f5f9;
     font-size: 14px;
-    color: var(--text-main);
+    color: #334155;
 }
 
-tr:last-child td {
-    border-bottom: none;
-}
+tr:last-child td { border-bottom: none; }
+tr:hover td { background: #f8fafc; }
 
-tr:hover td {
-    background: #f8fafc;
+/* شارات داخل الجدول */
+.badge {
+    padding: 5px 10px;
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: 600;
+    display: inline-block;
 }
+.badge.mode { background: #f1f5f9; color: #475569; }
+.badge.cash-pay { background: #e6f4ea; color: #137333; }
+.badge.elec-pay { background: #f3e8ff; color: #6b21a8; }
 
-/* مؤشر التحميل البث المباشر */
+/* مؤشر التحميل */
 .loader-wrapper {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    padding: 60px 0;
+    padding: 80px 0;
 }
 .spinner {
-    width: 50px;
-    height: 50px;
-    border: 5px solid #e2e8f0;
-    border-top: 5px solid var(--primary-color);
+    width: 55px;
+    height: 55px;
+    border: 4px solid #e2e8f0;
+    border-top: 4px solid var(--primary-color);
     border-radius: 50%;
-    animation: spin 1s linear infinite;
+    animation: spin 0.8s linear infinite;
 }
+
 @keyframes spin {
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
 }
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
 
-/* تعديلات مخصصة للطباعة لتبدو بشكل رسمي وفخم */
 @media print {
     body { background: white; padding: 0; }
-    .buttons-group, .copyBtn, .printBtn, .chartBtn { display: none !important; }
-    .header-wrapper { box-shadow: none; padding: 10px 0; border-bottom: 2px solid #000; border-radius: 0; }
-    .card { box-shadow: none; border: 1px solid #ccc !important; transform: none !important; }
+    .buttons-group, .loader-wrapper, .ai-advisor-container { display: none !important; }
+    .header-wrapper { box-shadow: none; padding: 15px 0; border-bottom: 2px solid #000; border-radius: 0; }
+    .card { box-shadow: none; border: 1px solid #cbd5e1 !important; transform: none !important; }
     .table-container { box-shadow: none; border: 1px solid #000; }
-    th { background: #eee !important; color: #000 !important; border-bottom: 1px solid #000; }
-    td { border-bottom: 1px solid #ccc; }
+    th { background: #f1f5f9 !important; color: #000 !important; }
 }
 </style>
 </head>
@@ -229,10 +280,11 @@ tr:hover td {
 <body>
 <div class="container">
     
+    <!-- الهيدر -->
     <div class="header-wrapper">
         <h1 class="header-title">
             <i class="fa-solid fa-square-poll-horizontal"></i> 
-            تقرير حركة المبيعات والأرباح الدورية
+            تقرير حركة المبيعات والأرباح المجمعة الذكي
         </h1>
         <div class="buttons-group">
             <button class="copyBtn" onclick="copyLink()"><i class="fa-solid fa-link"></i> نسخ الرابط المختصر</button>
@@ -241,20 +293,52 @@ tr:hover td {
         </div>
     </div>
 
+    <!-- مؤشر التحميل -->
     <div id="loader" class="loader-wrapper">
         <div class="spinner"></div>
-        <p style="margin-top: 15px; font-weight: 600; color: #64748b;">جاري جلب بيانات التقرير المالي من السيرفر السحابي...</p>
+        <p style="margin-top: 20px; font-weight: 600; color: #64748b;">جاري جلب وتحليل بيانات التقرير المالي بذكاء...</p>
     </div>
 
+    <!-- قسم مستشار الذكاء الاصطناعي (يظهر بعد التحميل) -->
+    <div class="ai-advisor-container" id="aiAdvisor" style="display: none;">
+        <div class="ai-icon">
+            <i class="fa-solid fa-robot"></i>
+        </div>
+        <div class="ai-content">
+            <h2>🤖 مستشار الذكاء الاصطناعي المالي يقول لك:</h2>
+            <p id="aiInsightsText">جاري توليد النبذة التحليلية الذكية لأدائك المالي المباشر...</p>
+        </div>
+    </div>
+
+    <!-- الكروت الإحصائية -->
     <div class="stats-grid" id="statsGrid" style="display: none;">
-        <div class="card items"><main><i class="fa-solid fa-cubes"></i><h3>عدد الأصناف</h3></main><div class="value-display" id="itemsCount">0</div></div>
-        <div class="card qty"><main><i class="fa-solid fa-boxes-stacked"></i><h3>إجمالي الكميات المباعة</h3></main><div class="value-display" id="totalQty">0</div></div>
-        <div class="card cash"><main><i class="fa-solid fa-money-bill-wave"></i><h3>إجمالي مبيعات الكاش</h3></main><div class="value-display" id="cashTotal">0.00 ج.م</div></div>
-        <div class="card elec"><main><i class="fa-solid fa-credit-card"></i><h3>إجمالي الدفع الإلكتروني</h3></main><div class="value-display" id="elecTotal">0.00 ج.م</div></div>
-        <div class="card sales"><main><i class="fa-solid fa-sack-dollar"></i><h3>المجموع الكلي للمبيعات</h3></main><div class="value-display" id="salesTotal">0.00 ج.م</div></div>
-        <div class="card profit"><main><i class="fa-solid fa-chart-line"></i><h3>صافي الأرباح المحققة</h3></main><div class="value-display" id="profitTotal">0.00 ج.م</div></div>
+        <div class="card items">
+            <div class="card-header-info"><h3>عدد الأصناف الفريدة</h3><i class="fa-solid fa-cubes"></i></div>
+            <div class="value-display" id="itemsCount">0</div>
+        </div>
+        <div class="card qty">
+            <div class="card-header-info"><h3>إجمالي الكميات المباعة</h3><i class="fa-solid fa-boxes-stacked"></i></div>
+            <div class="value-display" id="totalQty">0</div>
+        </div>
+        <div class="card cash">
+            <div class="card-header-info"><h3>مبيعات الكاش</h3><i class="fa-solid fa-money-bill-wave"></i></div>
+            <div class="value-display" id="cashTotal">0.00 ج.م</div>
+        </div>
+        <div class="card elec">
+            <div class="card-header-info"><h3>الدفع الإلكتروني</h3><i class="fa-solid fa-credit-card"></i></div>
+            <div class="value-display" id="elecTotal">0.00 ج.م</div>
+        </div>
+        <div class="card sales">
+            <div class="card-header-info"><h3>المجموع الكلي للمبيعات</h3><i class="fa-solid fa-sack-dollar"></i></div>
+            <div class="value-display" id="salesTotal">0.00 ج.م</div>
+        </div>
+        <div class="card profit">
+            <div class="card-header-info"><h3>صافي الأرباح المحققة</h3><i class="fa-solid fa-chart-line"></i></div>
+            <div class="value-display" id="profitTotal">0.00 ج.m</div>
+        </div>
     </div>
 
+    <!-- جدول المبيعات بدون تكرار -->
     <div class="table-container" id="tableContainer" style="display: none;">
         <table id="salesTable">
             <thead>
@@ -263,9 +347,9 @@ tr:hover td {
                     <th><i class="fa-solid fa-box"></i> اسم الصنف</th>
                     <th><i class="fa-solid fa-tag"></i> نوع البيع</th>
                     <th><i class="fa-solid fa-credit-card"></i> طريقة الدفع</th>
-                    <th><i class="fa-solid fa-layer-group"></i> الكمية</th>
-                    <th><i class="fa-solid fa-money-bill"></i> إجمالي البيع</th>
-                    <th><i class="fa-solid fa-chart-column"></i> الأرباح المباشرة</th>
+                    <th><i class="fa-solid fa-layer-group"></i> إجمالي الكمية</th>
+                    <th><i class="fa-solid fa-money-bill"></i> إجمالي المبيعات</th>
+                    <th><i class="fa-solid fa-chart-column"></i> الأرباح المجمعة</th>
                 </tr>
             </thead>
             <tbody></tbody>
@@ -274,10 +358,8 @@ tr:hover td {
 </div>
 
 <script>
-// رابط خادم جوجل شيت الخاص بك والمستلم منك برمجياً
 const googleAppsScriptUrl = "https://script.google.com/macros/s/AKfycbwNO8NS6huqBZRzyrSKTBHCXhF2PSFTEBsibne2jlvrIeAlr6AXHiECob_9ioQ_m7aU/exec";
 
-// دالة جلب المعرف ID من الرابط المتكون
 function getQueryParam(param) {
     const urlParams = new URLSearchParams(window.location.search);
     return urlParams.get(param);
@@ -288,28 +370,25 @@ function copyLink() {
     alert("📋 تم نسخ رابط التقرير بنجاح في الحافظة لإرساله عبر الواتساب.");
 }
 
-// البدء التلقائي عند تحميل الصفحة
 const invoiceId = getQueryParam('id');
 
 if (invoiceId) {
-    // جلب البيانات بث مباشر وحيوي من خادم جوجل شيت
     fetch(`${googleAppsScriptUrl}?id=${invoiceId}`)
         .then(response => {
-            if (!response.ok) throw new Error('فشل في جلب البيانات من السيرفر.');
+            if (!response.ok) throw new Error('فشل في جلب البيانات.');
             return response.json();
         })
         .then(salesData => {
             if (salesData.error) {
-                alert("❌ خطأ: التقرير المطلوب غير موجود على السيرفر أو تم حذفه.");
+                alert("❌ خطأ: التقرير المطلوب غير موجود على السيرفر.");
                 document.getElementById("loader").innerHTML = `<p style='color: red; font-weight: bold;'>⚠️ التقرير المالي غير موجود.</p>`;
                 return;
             }
 
-            const tbody = document.querySelector("#salesTable tbody");
-            let totalQty = 0, totalSales = 0, totalProfit = 0, cashTotal = 0, elecTotal = 0;
+            // --- عملية دمج الأصناف المتكررة ذكياً ---
+            const aggregatedMap = new Map();
 
             salesData.forEach(item => {
-                // دعم ذكي للمفاتيح المختصرة والموسعة لتلافي أي تغيير في نمط الضغط
                 let code = item.code || item.c || "غير مدرج";
                 let name = item.name || item.n || "غير معروف";
                 let priceMode = item.priceMode || item.m || "قطاعي";
@@ -318,45 +397,67 @@ if (invoiceId) {
                 let total = parseFloat(item.total || item.t) || 0;
                 let profit = parseFloat(item.profit || item.p) || 0;
 
-                totalQty += qty; 
-                totalSales += total; 
-                totalProfit += profit;
+                // إنشاء مفتاح فريد مبني على خصائص البيع الفريدة للمنتج لمنع التكرار
+                const uniqueKey = `${code}_${name}_${priceMode}_${payment}`;
 
-                let payLower = payment.toLowerCase();
-                if (payLower == "cash" || payLower == "كاش" || payLower == "نقدي") {
-                    cashTotal += total;
+                if (aggregatedMap.has(uniqueKey)) {
+                    let existing = aggregatedMap.get(uniqueKey);
+                    existing.qty += qty;
+                    existing.total += total;
+                    existing.profit += profit;
                 } else {
-                    elecTotal += total;
+                    aggregatedMap.set(uniqueKey, { code, name, priceMode, payment, qty, total, profit });
+                }
+            });
+
+            // بناء الجدول والعدادات من البيانات المجمعة حديثاً
+            const tbody = document.querySelector("#salesTable tbody");
+            let totalQty = 0, totalSales = 0, totalProfit = 0, cashTotal = 0, elecTotal = 0;
+
+            aggregatedMap.forEach(item => {
+                totalQty += item.qty; 
+                totalSales += item.total; 
+                totalProfit += item.profit;
+
+                let payLower = item.payment.toLowerCase();
+                if (payLower == "cash" || payLower == "كاش" || payLower == "نقدي") {
+                    cashTotal += item.total;
+                } else {
+                    elecTotal += item.total;
                 }
 
-                // إنشاء صف جديد داخل الجدول
+                let payBadgeClass = (payLower == "cash" || payLower == "كاش" || payLower == "نقدي") ? "cash-pay" : "elec-pay";
+
                 let row = document.createElement("tr");
                 row.innerHTML = `
-                    <td style="font-weight: 600; color: #64748b;">${code}</td>
-                    <td style="font-weight: bold; color: var(--text-main);">${name}</td>
-                    <td><span style="background: #e2e8f0; padding: 4px 8px; border-radius: 6px; font-size: 12px; font-weight: 600;">${priceMode}</span></td>
-                    <td><span style="font-size: 13px; font-weight: 600;">${payment}</span></td>
-                    <td style="font-weight: 600;">${qty}</td>
-                    <td style="font-weight: 700; color: var(--accent-orange);">${total.toFixed(2)} ج.م</td>
-                    <td style="font-weight: 700; color: var(--primary-color);">${profit.toFixed(2)} ج.م</td>
+                    <td style="font-weight: 600; color: #64748b;">${item.code}</td>
+                    <td style="font-weight: bold; color: var(--text-main);">${item.name}</td>
+                    <td><span class="badge mode">${item.priceMode}</span></td>
+                    <td><span class="badge ${payBadgeClass}">${item.payment}</span></td>
+                    <td style="font-weight: 600;">${item.qty}</td>
+                    <td style="font-weight: 700; color: var(--accent-orange);">${item.total.toFixed(2)} ج.م</td>
+                    <td style="font-weight: 700; color: var(--primary-color);">${item.profit.toFixed(2)} ج.م</td>
                 `;
                 tbody.appendChild(row);
             });
 
-            // تعبئة لوحة الكروت الذكية
-            document.getElementById("itemsCount").innerText = salesData.length;
+            // تعبئة البيانات الإحصائية في الكروت
+            document.getElementById("itemsCount").innerText = aggregatedMap.size; // عدد الأصناف الفريدة بدون تكرار
             document.getElementById("totalQty").innerText = totalQty;
             document.getElementById("salesTotal").innerText = totalSales.toLocaleString('ar-EG', { minimumFractionDigits: 2 }) + " ج.م";
             document.getElementById("profitTotal").innerText = totalProfit.toLocaleString('ar-EG', { minimumFractionDigits: 2 }) + " ج.م";
             document.getElementById("cashTotal").innerText = cashTotal.toLocaleString('ar-EG', { minimumFractionDigits: 2 }) + " ج.م";
             document.getElementById("elecTotal").innerText = elecTotal.toLocaleString('ar-EG', { minimumFractionDigits: 2 }) + " ج.م";
 
-            // إخفاء مؤشر التحميل وإظهار لوحة التحكم بالكامل
+            // --- تشغيل ميزة الذكاء الاصطناعي الافتراضية الذكية لطمأنة العميل ---
+            generateAIInsights(totalSales, totalProfit, cashTotal, elecTotal);
+
+            // إظهار العناصر بعد التحميل الناجح
             document.getElementById("loader").style.display = "none";
+            document.getElementById("aiAdvisor").style.display = "flex";
             document.getElementById("statsGrid").style.display = "grid";
             document.getElementById("tableContainer").style.display = "block";
 
-            // حفظ نسخة محلياً إذا أردت دعم صفحة الرسوم البيانية كالعادة
             localStorage.setItem("salesData", JSON.stringify(salesData));
         })
         .catch(err => {
@@ -365,6 +466,26 @@ if (invoiceId) {
         });
 } else {
     document.getElementById("loader").innerHTML = `<p style='color: #e65100; font-weight: bold;'>ℹ️ برجاء فتح الصفحة من خلال الرابط التلقائي المولد من برنامج السي شارب ويحتوي على معرف التقرير (?id=...).</p>`;
+}
+
+// دالة الذكاء الاصطناعي لتحليل الأرقام الحالية فوراً وطمأنة المستخدم
+function generateAIInsights(sales, profit, cash, elec) {
+    const profitMargin = sales > 0 ? ((profit / sales) * 100).toFixed(1) : 0;
+    let text = `الأخبار ممتازة جداً ومطمئنة! 🎉 إجمالي مبيعاتك للفترة الحالية بلغ **${sales.toLocaleString('ar-EG')} ج.م**، محققاً صافي ربح قدره **${profit.toLocaleString('ar-EG')} ج.م**، وهو ما يعادل هامش ربح رائع بنسبة **${profitMargin}%**. `;
+    
+    if (cash > elec) {
+        text += `نلاحظ أن **الدفع النقدي (الكاش)** هو المهيمن في عملياتك المالية ويمثل القوة الشرائية الكبرى لديك حالياً بمبلغ **${cash.toLocaleString('ar-EG')} ج.م**. `;
+    } else if (elec > cash) {
+        text += `هناك إقبال ممتاز على **الدفع الإلكتروني** بمبلغ **${elec.toLocaleString('ar-EG')} ج.م**، مما يعني أن عملائك يفضلون الحلول الرقمية، وهذا يقلل من عبء إدارة النقدية اليدوية. `;
+    }
+    
+    if (profitMargin >= 20) {
+        text += `معدل أرباحك في أمان تام وتجارتك تسير بمنحنى صاعد قوي؛ استمر على هذا النهج المستقر وسرك في أمان! 💪📈`;
+    } else {
+        text += `حجم المبيعات ممتاز، ننصحك فقط بمراجعة تكاليف شراء الأصناف لرفع نسبة صافي الربح قليلاً خلال الفترات القادمة. التجارة مستقرة ومبشرة بالخير! 👍`;
+    }
+    
+    document.getElementById("aiInsightsText").innerHTML = text;
 }
 
 function openCharts() {
